@@ -304,7 +304,7 @@ class AspectRatioGLSurfaceView : GLSurfaceView, GLSurfaceView.Renderer,
         }
         mAspectRatio = aspectRatio
         Logger.i(TAG, "AspectRatio = $mAspectRatio")
-        requestLayout()
+        postUITask { requestLayout() }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

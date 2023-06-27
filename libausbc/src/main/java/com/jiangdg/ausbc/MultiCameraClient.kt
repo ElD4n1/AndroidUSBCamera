@@ -306,6 +306,8 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                         }
                     }.also { view->
                         isNeedGLESRender = isGLESRender(renderMode == CameraRequest.RenderMode.OPENGL)
+                        if (view == null)
+                            Logger.i(TAG, "View is null!")
                         if (! isNeedGLESRender && view != null) {
                             openCameraInternal(view)
                             return true

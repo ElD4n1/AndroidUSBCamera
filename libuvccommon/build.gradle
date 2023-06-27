@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 /*
  * libcommon
  * utility/helper classes for myself
@@ -39,6 +40,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 dependencies {
@@ -47,4 +52,17 @@ dependencies {
 	implementation "androidx.appcompat:appcompat:1.0.2"
 	implementation "androidx.recyclerview:recyclerview:1.0.0"
 	implementation "androidx.preference:preference:1.0.0"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId 'com.eld4n1'
+                artifactId 'libuvccommon'
+                version rootProject.ext.versionNameString
+            }
+        }
+    }
 }

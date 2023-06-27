@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
 }
 
 android {
@@ -29,6 +30,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 dependencies {
@@ -46,4 +51,17 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:4.10.0"
     implementation "com.zlc.glide:webpdecoder:1.6.4.9.0"
     implementation 'com.tencent:mmkv:1.2.12'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId 'com.eld4n1'
+                artifactId 'libutils'
+                version rootProject.ext.versionNameString
+            }
+        }
+    }
 }

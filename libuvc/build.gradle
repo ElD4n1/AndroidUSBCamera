@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -31,6 +32,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+	publishing {
+		singleVariant("release") {}
+	}
 }
 
 tasks.withType(JavaCompile) {
@@ -72,4 +77,17 @@ dependencies {
 	implementation "androidx.appcompat:appcompat:${androidXVersion}"
 	implementation 'com.elvishew:xlog:1.11.0'
 	implementation project(path: ':libuvccommon')
+}
+
+afterEvaluate {
+	publishing {
+		publications {
+			release(MavenPublication) {
+				from components.release
+				groupId 'com.eld4n1'
+				artifactId 'libuvc'
+				version rootProject.ext.versionNameString
+			}
+		}
+	}
 }

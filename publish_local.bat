@@ -1,0 +1,1 @@
+.\gradlew build -x lint && .\gradlew publishToMavenLocal
