@@ -83,8 +83,8 @@ abstract class CameraFragment : BaseFragment(), ICameraStateCallBack {
         unRegisterMultiCamera()
     }
 
-    protected fun registerMultiCamera() {
-        mCameraClient = MultiCameraClient(requireContext(), object : IDeviceConnectCallBack {
+    protected fun registerMultiCamera(context: Context? = null) {
+        mCameraClient = MultiCameraClient(context ?: requireContext(), object : IDeviceConnectCallBack {
             override fun onAttachDev(device: UsbDevice?) {
                 device ?: return
                 context?.let {
@@ -180,7 +180,7 @@ abstract class CameraFragment : BaseFragment(), ICameraStateCallBack {
                 width: Int,
                 height: Int
             ) {
-                registerMultiCamera()
+                registerMultiCamera(textureView.context)
             }
 
             override fun onSurfaceTextureSizeChanged(
@@ -204,7 +204,7 @@ abstract class CameraFragment : BaseFragment(), ICameraStateCallBack {
     private fun handleSurfaceView(surfaceView: SurfaceView) {
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder?) {
-                registerMultiCamera()
+                registerMultiCamera(surfaceView.context)
             }
 
             override fun surfaceChanged(
