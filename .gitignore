@@ -10,3 +10,5 @@
 .externalNativeBuild
 .tags*
 .cxx/
+/libuvc/src/main/libs/
+/libuvccommon/build/
