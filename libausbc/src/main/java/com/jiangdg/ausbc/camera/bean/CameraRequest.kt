@@ -28,6 +28,8 @@ import com.jiangdg.ausbc.render.env.RotateType
 class CameraRequest private constructor() {
     var previewWidth: Int = DEFAULT_WIDTH
     var previewHeight: Int = DEFAULT_HEIGHT
+    var minFps: Int = DEFAULT_MIN_FPS
+    var maxFps: Int = DEFAULT_MAX_FPS
     var renderMode: RenderMode = RenderMode.OPENGL
     var isAspectRatioShow: Boolean = true
     var isRawPreviewData: Boolean = false
@@ -84,6 +86,28 @@ class CameraRequest private constructor() {
          */
         fun setPreviewHeight(height: Int): Builder {
             mRequest.previewHeight = height
+            return this
+        }
+
+        /**
+         * Set preview height
+         *
+         * @param height camera preview height
+         * @return [Builder]
+         */
+        fun setMinFps(minFps: Int): Builder {
+            mRequest.minFps = minFps
+            return this
+        }
+
+        /**
+         * Set preview height
+         *
+         * @param height camera preview height
+         * @return [Builder]
+         */
+        fun setMaxFps(maxFps: Int): Builder {
+            mRequest.maxFps = maxFps
             return this
         }
 
@@ -239,5 +263,7 @@ class CameraRequest private constructor() {
     companion object {
         private const val DEFAULT_WIDTH = 640
         private const val DEFAULT_HEIGHT = 480
+        private const val DEFAULT_MIN_FPS = 1
+        private const val DEFAULT_MAX_FPS = 61
     }
 }

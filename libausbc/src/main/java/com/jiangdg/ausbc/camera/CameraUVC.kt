@@ -155,8 +155,8 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
             mUvcCamera?.setPreviewSize(
                 previewSize.width,
                 previewSize.height,
-                MIN_FS,
-                MAX_FPS,
+                mCameraRequest!!.minFps,
+                mCameraRequest!!.maxFps,
                 previewFormat,
                 UVCCamera.DEFAULT_BANDWIDTH
             )
@@ -176,8 +176,8 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
                 mUvcCamera?.setPreviewSize(
                     previewSize.width,
                     previewSize.height,
-                    MIN_FS,
-                    MAX_FPS,
+                    mCameraRequest!!.minFps,
+                    mCameraRequest!!.maxFps,
                     if (previewFormat == UVCCamera.FRAME_FORMAT_YUYV) {
                         UVCCamera.FRAME_FORMAT_MJPEG
                     } else {
@@ -525,7 +525,5 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
 
     companion object {
         private const val TAG = "CameraUVC"
-        private const val MIN_FS = 1
-        private const val MAX_FPS = 61
     }
 }
