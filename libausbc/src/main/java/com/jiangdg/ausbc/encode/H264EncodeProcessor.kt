@@ -19,7 +19,6 @@ import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
 import android.view.Surface
-import com.jiangdg.ausbc.MultiCameraClient
 import com.jiangdg.ausbc.callback.IEncodeDataCallBack
 import com.jiangdg.ausbc.utils.Logger
 import com.jiangdg.natives.YUVUtils
@@ -38,8 +37,9 @@ class H264EncodeProcessor(
     val width: Int,
     val height: Int,
     private val gLESRender: Boolean = false,
-    private val isPortrait: Boolean = true
-) : AbstractProcessor() {
+    private val isPortrait: Boolean = true,
+    bitRate: Int? = null
+) : AbstractProcessor(bitRate) {
     private var mReadyListener: OnEncodeReadyListener? = null
     private var mPpsSps = ByteArray(0)
 

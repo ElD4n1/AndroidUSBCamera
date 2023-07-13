@@ -450,7 +450,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             mContext.resources.configuration.orientation.let { orientation ->
                 orientation == Configuration.ORIENTATION_PORTRAIT
             }.also { isPortrait ->
-                mVideoProcess = H264EncodeProcessor(previewWidth, previewHeight, isNeedGLESRender, isPortrait)
+                mVideoProcess = H264EncodeProcessor(previewWidth, previewHeight, isNeedGLESRender, isPortrait, mCameraRequest?.bitRate)
             }
         }
 

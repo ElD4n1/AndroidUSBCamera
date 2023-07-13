@@ -30,6 +30,7 @@ class CameraRequest private constructor() {
     var previewHeight: Int = DEFAULT_HEIGHT
     var minFps: Int = DEFAULT_MIN_FPS
     var maxFps: Int = DEFAULT_MAX_FPS
+    var bitRate: Int? = null // Will be calculated depending on resolution if kept null
     var renderMode: RenderMode = RenderMode.OPENGL
     var isAspectRatioShow: Boolean = true
     var isRawPreviewData: Boolean = false
@@ -90,9 +91,9 @@ class CameraRequest private constructor() {
         }
 
         /**
-         * Set preview height
+         * Set minimum frames per second
          *
-         * @param height camera preview height
+         * @param minFps minimum frames per second
          * @return [Builder]
          */
         fun setMinFps(minFps: Int): Builder {
@@ -101,13 +102,24 @@ class CameraRequest private constructor() {
         }
 
         /**
-         * Set preview height
+         * Set maximum frames per second
          *
-         * @param height camera preview height
+         * @param maxFps maximum frames per second
          * @return [Builder]
          */
         fun setMaxFps(maxFps: Int): Builder {
             mRequest.maxFps = maxFps
+            return this
+        }
+
+        /**
+         * Set video bit rate
+         *
+         * @param bitRate video bit rate
+         * @return [Builder]
+         */
+        fun setBitRate(bitRate: Int): Builder {
+            mRequest.bitRate = bitRate
             return this
         }
 

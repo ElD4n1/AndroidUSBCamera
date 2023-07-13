@@ -34,7 +34,9 @@ import kotlin.Exception
  *
  * @author Created by jiangdg on 2022/2/10
  */
-abstract class AbstractProcessor() {
+abstract class AbstractProcessor(
+    protected var mBitRate: Int? = null
+) {
     private var mEncodeThread: HandlerThread? = null
     private var mEncodeHandler: Handler? = null
     protected var mMediaCodec: MediaCodec? = null
@@ -42,7 +44,6 @@ abstract class AbstractProcessor() {
     private var isVideo: Boolean = false
     private var mEncodeDataCb: IEncodeDataCallBack? = null
     protected val mRawDataQueue: ConcurrentLinkedQueue<RawData> = ConcurrentLinkedQueue()
-    protected var mBitRate: Int? = null
     protected var mMainHandler: Handler = Handler(Looper.getMainLooper())
 
     protected val mEncodeState: AtomicBoolean by lazy {
