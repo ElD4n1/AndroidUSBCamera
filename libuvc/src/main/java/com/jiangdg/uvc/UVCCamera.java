@@ -439,6 +439,17 @@ public class UVCCamera {
     	}
     }
 
+	/**
+	 * set frame timestamp callback
+	 * @param callback
+	 */
+	public int setFrameTimestampCallback(final IFrameTimestampCallback callback) {
+		if (mNativePtr != 0) {
+			return nativeSetFrameTimestampCallback(mNativePtr, callback);
+		}
+		return 1;
+	}
+
     /**
      * start preview
      */
@@ -1086,6 +1097,7 @@ public class UVCCamera {
 	private static final native int nativeStopPreview(final long id_camera);
 	private static final native int nativeSetPreviewDisplay(final long id_camera, final Surface surface);
 	private static final native int nativeSetFrameCallback(final long mNativePtr, final IFrameCallback callback, final int pixelFormat);
+	private static final native int nativeSetFrameTimestampCallback(final long mNativePtr, final IFrameTimestampCallback callback);
 
 //**********************************************************************
 	/**

@@ -29,6 +29,7 @@ import com.jiangdg.ausbc.utils.Utils
 import com.jiangdg.ausbc.widget.IAspectRatio
 import com.jiangdg.usb.*
 import com.jiangdg.usb.DeviceFilter
+import com.jiangdg.uvc.IFrameTimestampCallback
 import com.jiangdg.uvc.UVCCamera
 import java.text.SimpleDateFormat
 import java.util.*
@@ -863,8 +864,12 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 Logger.w(TAG, "capturing video already running")
                 return
             }
+            var definedPath: String = path ?: generatePath()
+            mCameraRequest?.frameTimestampCaptureStartedCallback?.apply {
+                setFrameTimestampCallback(this.onFrameTimestampCaptureStarted(definedPath))
+            }
             captureStreamStartInternal()
-            Mp4Muxer(mContext, callBack, path, durationInSec, mAudioProcess==null).apply {
+            Mp4Muxer(mContext, callBack, definedPath, durationInSec, mAudioProcess==null).apply {
                 mVideoProcess?.setMp4Muxer(this, true)
                 mAudioProcess?.setMp4Muxer(this, false)
             }.also { muxer ->
@@ -872,6 +877,13 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             }
             Logger.i(TAG, "capturing video start")
         }
+
+        private fun generatePath(): String {
+            val date = mDateFormat.format(System.currentTimeMillis())
+            return "$mCameraDir/VID_JJCamera_$date"
+        }
+
+        protected abstract fun setFrameTimestampCallback(callback: IFrameTimestampCallback);
 
         private fun captureVideoStopInternal() {
             captureStreamStopInternal()

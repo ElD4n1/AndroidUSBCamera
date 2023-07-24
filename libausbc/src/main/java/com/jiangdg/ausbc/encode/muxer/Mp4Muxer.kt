@@ -51,7 +51,7 @@ import java.util.*
 class Mp4Muxer(
     context: Context?,
     callBack: ICaptureCallBack,
-    private var path: String? = null,
+    private var path: String,
     private val durationInSec: Long = 0,
     private val isVideoOnly: Boolean = false
 ) {
@@ -68,24 +68,14 @@ class Mp4Muxer(
     private var mOriginalPath: String? = null
     private var mVideoPts: Long = 0L
     private var mAudioPts: Long = 0L
-    private val mDateFormat by lazy {
-        SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault())
-    }
-    private val mCameraDir by lazy {
-        "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Camera"
-    }
 
     init {
         this.mCaptureCallBack = callBack
         this.mContext= context
         try {
-            if (path.isNullOrEmpty()) {
-                val date = mDateFormat.format(System.currentTimeMillis())
-                path = "$mCameraDir/VID_JJCamera_$date"
-            }
             mOriginalPath = path
             path = "${path}.mp4"
-            mMediaMuxer = MediaMuxer(path!!, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
+            mMediaMuxer = MediaMuxer(path, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
         } catch (e: Exception) {
             mCaptureCallBack?.onError(e.localizedMessage)
             Logger.e(TAG, "init media muxer failed, err = ${e.localizedMessage}", e)

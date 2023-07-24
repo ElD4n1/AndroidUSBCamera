@@ -276,6 +276,19 @@ static jint nativeSetFrameCallback(JNIEnv *env, jobject thiz,
 	RETURN(result, jint);
 }
 
+static jint nativeSetFrameTimestampCallback(JNIEnv *env, jobject thiz,
+								   ID_TYPE id_camera, jobject jIFrameTimestampCallback) {
+
+	jint result = JNI_ERR;
+	ENTER();
+	UVCCamera *camera = reinterpret_cast<UVCCamera *>(id_camera);
+	if (LIKELY(camera)) {
+		jobject frame_timestamp_callback_obj = env->NewGlobalRef(jIFrameTimestampCallback);
+		result = camera->setFrameTimestampCallback(env, frame_timestamp_callback_obj);
+	}
+	RETURN(result, jint);
+}
+
 static jint nativeSetCaptureDisplay(JNIEnv *env, jobject thiz,
 	ID_TYPE id_camera, jobject jSurface) {
 
@@ -2041,6 +2054,7 @@ static JNINativeMethod methods[] = {
 	{ "nativeStopPreview",				"(J)I", (void *) nativeStopPreview },
 	{ "nativeSetPreviewDisplay",		"(JLandroid/view/Surface;)I", (void *) nativeSetPreviewDisplay },
 	{ "nativeSetFrameCallback",			"(JLcom/jiangdg/uvc/IFrameCallback;I)I", (void *) nativeSetFrameCallback },
+	{ "nativeSetFrameTimestampCallback","(JLcom/jiangdg/uvc/IFrameTimestampCallback;)I", (void *) nativeSetFrameTimestampCallback },
 
 	{ "nativeSetCaptureDisplay",		"(JLandroid/view/Surface;)I", (void *) nativeSetCaptureDisplay },
 

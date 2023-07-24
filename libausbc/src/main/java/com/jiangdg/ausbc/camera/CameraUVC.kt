@@ -36,6 +36,7 @@ import com.jiangdg.ausbc.utils.Logger
 import com.jiangdg.ausbc.utils.MediaUtils
 import com.jiangdg.ausbc.utils.Utils
 import com.jiangdg.uvc.IFrameCallback
+import com.jiangdg.uvc.IFrameTimestampCallback
 import com.jiangdg.uvc.UVCCamera
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -104,6 +105,13 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
             }
         }
         return previewSizeList
+    }
+
+    override fun setFrameTimestampCallback(callback: IFrameTimestampCallback) {
+        if (mUvcCamera?.setFrameTimestampCallback(callback) == 0)
+            Logger.i(TAG, "Successfully set frame timestamp callback")
+        else
+            Logger.e(TAG, "Failed to set frame timestamp callback")
     }
 
     override fun <T> openCameraInternal(cameraView: T) {
@@ -297,6 +305,8 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
             if (Utils.debugCamera) { Logger.i(TAG, "captureImageInternal save path = $path") }
         }
     }
+
+
 
     /**
      * Is mic supported

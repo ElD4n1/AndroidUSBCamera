@@ -53,6 +53,10 @@ typedef struct {
 	jmethodID onFrame;
 } Fields_iframecallback;
 
+typedef struct {
+	jmethodID onFrameTimestamp;
+} Fields_iframetimestampcallback;
+
 class UVCPreview {
 private:
 	uvc_device_handle_t *mDeviceHandle;
@@ -82,7 +86,9 @@ private:
 	uvc_frame_t *captureQueu;			// keep latest frame
 	jobject mFrameCallbackObj;
 	convFunc_t mFrameCallbackFunc;
+	jobject mFrameTimestampCallbackObj;
 	Fields_iframecallback iframecallback_fields;
+    Fields_iframetimestampcallback iframetimestampcallback_fields;
 	int mPixelFormat;
 	size_t callbackPixelBytes;
 // improve performance by reducing memory allocation
@@ -120,6 +126,7 @@ public:
 	int setPreviewSize(int width, int height, int min_fps, int max_fps, int mode, float bandwidth = 1.0f);
 	int setPreviewDisplay(ANativeWindow *preview_window);
 	int setFrameCallback(JNIEnv *env, jobject frame_callback_obj, int pixel_format);
+	int setFrameTimestampCallback(JNIEnv *env, jobject frame_timestamp_callback_obj);
 	int startPreview();
 	int stopPreview();
 	inline const bool isCapturing() const;

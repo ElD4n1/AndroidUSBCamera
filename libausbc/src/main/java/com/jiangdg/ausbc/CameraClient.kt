@@ -17,6 +17,7 @@ package com.jiangdg.ausbc
 
 import android.content.Context
 import android.graphics.SurfaceTexture
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.view.Surface
@@ -51,6 +52,8 @@ import com.jiangdg.ausbc.widget.AspectRatioTextureView
 import com.jiangdg.ausbc.widget.IAspectRatio
 import com.jiangdg.usb.USBMonitor
 import com.jiangdg.uvc.UVCCamera
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.math.abs
 
 /**
@@ -75,6 +78,12 @@ class CameraClient internal constructor(builder: Builder) : IPreviewDataCallBack
     private var mVideoProcess: AbstractProcessor? = null
     private var mMediaMuxer: Mp4Muxer? = null
     private val mMainHandler: Handler = Handler(Looper.getMainLooper())
+    protected val mDateFormat by lazy {
+        SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.getDefault())
+    }
+    protected val mCameraDir by lazy {
+        "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Camera"
+    }
 
     private val mRenderManager: RenderManager? by lazy {
         RenderManager(mCtx!!, mRequest!!.previewWidth, mRequest!!.previewHeight, null)
@@ -411,7 +420,7 @@ class CameraClient internal constructor(builder: Builder) : IPreviewDataCallBack
      * @param durationInSec video file auto divide duration is seconds
      */
     fun captureVideoStart(callBack: ICaptureCallBack, path: String ?= null, durationInSec: Long = 0L) {
-        mMediaMuxer = Mp4Muxer(mCtx, callBack,  path, durationInSec)
+        mMediaMuxer = Mp4Muxer(mCtx, callBack, path ?: generatePath(), durationInSec)
         (mVideoProcess as? H264EncodeProcessor)?.apply {
             startEncode()
             setMp4Muxer(mMediaMuxer!!, true)
@@ -432,6 +441,11 @@ class CameraClient internal constructor(builder: Builder) : IPreviewDataCallBack
             startEncode()
             setMp4Muxer(mMediaMuxer!!, false)
         }
+    }
+
+    private fun generatePath(): String {
+        val date = mDateFormat.format(System.currentTimeMillis())
+        return "$mCameraDir/VID_JJCamera_$date"
     }
 
     /**
