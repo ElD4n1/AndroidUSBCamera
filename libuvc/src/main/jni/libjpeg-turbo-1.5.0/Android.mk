@@ -29,6 +29,8 @@ include $(CLEAR_VARS)
 
 # CFLAGS := -Werror
 
+APP_ABI := armeabi-v7a arm64-v8a  # Target only armeabi-v7a and arm64-v8a.
+
 #生成するモジュール名
 LOCAL_MODULE    := jpeg-turbo1500_static
 

@@ -11,7 +11,6 @@ aux_source_directory(${CMAKE_SOURCE_DIR}/module/mp3/lame SRC_LAME)
 add_library(
         nativelib
         SHARED
-
         ${SRC_LAME}
         utils/logger.cpp
         module/yuv/yuv.cpp

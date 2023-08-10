@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion rootProject.ext.versionCompiler
+    compileSdkVersion 31
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.versionTarget
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionNameString
+        minSdkVersion 21
+        targetSdkVersion 31
+//        versionCode 126
+//        versionName rootProject.ext.versionNameString
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -41,9 +41,9 @@ android {
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:${androidXVersion}"
-    implementation "androidx.constraintlayout:constraintlayout:${constraintlayoutVersion}"
-    implementation "com.google.android.material:material:${materialVersion}"
+    implementation "androidx.appcompat:appcompat:1.3.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "com.google.android.material:material:1.3.0"
     api 'com.elvishew:xlog:1.11.0'
 //    implementation fileTree("libs")
 
@@ -51,15 +51,15 @@ dependencies {
     api project(path: ':libnative')
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId 'com.eld4n1'
-                artifactId 'libausbc'
-                version rootProject.ext.versionNameString
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            release(MavenPublication) {
+//                from components.release
+//                groupId 'com.eld4n1'
+//                artifactId 'libausbc'
+//                version rootProject.ext.versionNameString
+//            }
+//        }
+//    }
+//}

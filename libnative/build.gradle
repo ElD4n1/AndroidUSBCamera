@@ -8,7 +8,7 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode 2
         versionName "1.0.1"
@@ -20,7 +20,7 @@ android {
                 cppFlags ""
             }
             ndk{
-                abiFilters 'armeabi-v7a','arm64-v8a', "x86", "x86_64"
+                abiFilters 'armeabi-v7a','arm64-v8a'
             }
         }
     }
@@ -60,15 +60,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId 'com.eld4n1'
-                artifactId 'libnative'
-                version rootProject.ext.versionNameString
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            release(MavenPublication) {
+//                from components.release
+//                groupId 'com.eld4n1'
+//                artifactId 'libnative'
+//                version rootProject.ext.versionNameString
+//            }
+//        }
+//    }
+//}

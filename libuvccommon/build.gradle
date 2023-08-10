@@ -20,26 +20,26 @@ apply plugin: 'maven-publish'
 */
 
 android {
-    compileSdkVersion rootProject.ext.versionCompiler
-    buildToolsVersion rootProject.ext.versionBuildTool
-
-    compileOptions {
-        sourceCompatibility rootProject.ext.javaSourceCompatibility
-        targetCompatibility rootProject.ext.javaTargetCompatibility
-    }
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.versionTarget
-        versionCode 222
-        versionName '4.1.1'
-        buildConfigField "String", "STL_NAME", "\"${project.property("STL_NAME")}\""
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+    compileSdkVersion 31
+//    buildToolsVersion rootProject.ext.versionBuildTool
+//
+//    compileOptions {
+//        sourceCompatibility rootProject.ext.javaSourceCompatibility
+//        targetCompatibility rootProject.ext.javaTargetCompatibility
+//    }
+//    defaultConfig {
+//        minSdkVersion rootProject.ext.minSdkVersion
+//        targetSdkVersion rootProject.ext.versionTarget
+//        versionCode 222
+//        versionName '4.1.1'
+//        buildConfigField "String", "STL_NAME", "\"${project.property("STL_NAME")}\""
+//    }
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
 
     publishing {
         singleVariant("release") {}
@@ -54,15 +54,15 @@ dependencies {
 	implementation "androidx.preference:preference:1.0.0"
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId 'com.eld4n1'
-                artifactId 'libuvccommon'
-                version rootProject.ext.versionNameString
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            release(MavenPublication) {
+//                from components.release
+//                groupId 'com.eld4n1'
+//                artifactId 'libuvccommon'
+//                version rootProject.ext.versionNameString
+//            }
+//        }
+//    }
+//}
