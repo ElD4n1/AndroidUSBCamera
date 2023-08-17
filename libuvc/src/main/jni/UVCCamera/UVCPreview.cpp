@@ -276,7 +276,7 @@ int UVCPreview::setFrameTimestampCallback(JNIEnv *env, jobject frame_timestamp_c
 				jclass clazz = env->GetObjectClass(frame_timestamp_callback_obj);
 				if (LIKELY(clazz)) {
 					iframetimestampcallback_fields.onFrameTimestamp = env->GetMethodID(clazz,
-																					   "onFrameTimestamp",	"(Ljava/nio/LongBuffer;)V");
+																					   "onFrameTimestamp",	"(J)V");
 				} else {
 					LOGW("failed to get object class");
 				}
@@ -928,10 +928,19 @@ void UVCPreview::do_capture_callback(JNIEnv *env, uvc_frame_t *frame) {
 		LOGD("LIKELY(frame)");
 		if (mFrameTimestampCallbackObj) {
 			LOGD("Calling timestamp callback");
-			int64_t timestamp = int64_t(frame->capture_time.tv_sec)*1000000LL + int64_t(frame->capture_time.tv_usec);
-			env->CallVoidMethod(mFrameTimestampCallbackObj, iframetimestampcallback_fields.onFrameTimestamp,
-								timestamp);
-			env->ExceptionClear();
+			volatile jlong timestamp = jlong(frame->capture_time.tv_sec)*1000000000LL + jlong(frame->capture_time.tv_nsec);
+//			if (timestamp != 0LL) {
+				env->CallVoidMethod(mFrameTimestampCallbackObj,
+									iframetimestampcallback_fields.onFrameTimestamp,
+									timestamp);
+//			}
+			if (env->ExceptionCheck()) {
+//				jmethodID getMessageMethodId = env->GetMethodID(env->FindClass("java/lang/Throwable"), "getMessage", "()Ljava/lang/String;");
+//				jstring exceptionMessageJStr = (jstring)env->CallObjectMethod(env->ExceptionOccurred(), getMessageMethodId);
+//				const char* exceptionMessage = env->GetStringUTFChars(exceptionMessageJStr, new jboolean(false));
+//				LOGE("%s", exceptionMessage);
+				env->ExceptionClear();
+			}
 		}
 		if (mFrameCallbackObj) {
 			if (mFrameCallbackFunc) {

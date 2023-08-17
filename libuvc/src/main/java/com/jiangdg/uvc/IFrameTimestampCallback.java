@@ -26,5 +26,5 @@ package com.jiangdg.uvc;
 import java.nio.LongBuffer;
 
 public interface IFrameTimestampCallback {
-	public void onFrameTimestamp(LongBuffer timestamp);
+	public void onFrameTimestamp(Long timestamp);
 }

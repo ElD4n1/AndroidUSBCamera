@@ -278,6 +278,9 @@ int UVCCamera::setFrameTimestampCallback(JNIEnv *env, jobject frame_timestamp_ca
 	int result = EXIT_FAILURE;
 	if (mPreview) {
 		result = mPreview->setFrameTimestampCallback(env, frame_timestamp_callback_obj);
+        if (env->ExceptionCheck()) {
+            env->ExceptionClear();
+        }
 	}
 	RETURN(result, int);
 }
