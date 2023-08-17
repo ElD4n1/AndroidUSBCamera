@@ -16,9 +16,6 @@ android {
         minSdkVersion 21
 		targetSdkVersion 31
 		externalNativeBuild {
-			ndkBuild {
-				cppFlags ''
-			}
 			cmake {
 				version "3.22.1"
 			}
@@ -42,6 +39,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+
+		debug {
+			externalNativeBuild {
+				cmake {
+					cppFlags += "-O0"
+				}
+			}
+		}
     }
 
 	publishing {
