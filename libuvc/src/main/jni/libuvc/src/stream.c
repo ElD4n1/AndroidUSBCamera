@@ -608,6 +608,8 @@ static void _uvc_swap_buffers(uvc_stream_handle_t *strmh) {
 
 	pthread_mutex_lock(&strmh->cb_mutex);
 	{
+		(void)clock_gettime(CLOCK_MONOTONIC, &strmh->capture_time_finished); // backported
+
 		/* swap the buffers */
 		tmp_buf = strmh->holdbuf;
 		strmh->hold_bfh_err = strmh->bfh_err;	// XXX
@@ -1682,6 +1684,7 @@ void _uvc_populate_frame(uvc_stream_handle_t *strmh) {
 
 	frame->frame_format = strmh->frame_format;
 
+	frame->capture_time = strmh->capture_time_finished; // backported
 	frame->width = frame_desc->wWidth;
 	frame->height = frame_desc->wHeight;
 	// XXX set actual_bytes to zero when erro bits is on
