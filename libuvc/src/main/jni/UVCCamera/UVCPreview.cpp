@@ -928,7 +928,7 @@ void UVCPreview::do_capture_callback(JNIEnv *env, uvc_frame_t *frame) {
 		LOGD("LIKELY(frame)");
 		if (mFrameTimestampCallbackObj) {
 			LOGD("Calling timestamp callback");
-			volatile jlong timestamp = jlong(frame->capture_time.tv_sec)*1000000000LL + jlong(frame->capture_time.tv_nsec);
+			jlong timestamp = jlong(frame->capture_time.tv_sec)*1000000000LL + jlong(frame->capture_time.tv_nsec);
 //			if (timestamp != 0LL) {
 				env->CallVoidMethod(mFrameTimestampCallbackObj,
 									iframetimestampcallback_fields.onFrameTimestamp,

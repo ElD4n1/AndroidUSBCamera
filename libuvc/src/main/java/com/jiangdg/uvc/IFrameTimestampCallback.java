@@ -23,8 +23,6 @@
 
 package com.jiangdg.uvc;
 
-import java.nio.LongBuffer;
-
 public interface IFrameTimestampCallback {
 	public void onFrameTimestamp(Long timestamp);
 }

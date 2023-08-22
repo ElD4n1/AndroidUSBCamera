@@ -18,7 +18,7 @@ package com.jiangdg.ausbc.camera.bean
 import androidx.annotation.Keep
 import com.jiangdg.ausbc.render.effect.AbstractEffect
 import com.jiangdg.ausbc.render.env.RotateType
-import com.jiangdg.uvc.IFrameTimestampCaptureStartedCallback
+import com.jiangdg.uvc.IFrameTimestampCaptureStateChangedCallback
 
 
 /** Camera request parameters
@@ -40,7 +40,7 @@ class CameraRequest private constructor() {
     var defaultRotateType: RotateType = RotateType.ANGLE_0
     var audioSource: AudioSource = AudioSource.SOURCE_AUTO
     var previewFormat: PreviewFormat = PreviewFormat.FORMAT_MJPEG
-    var frameTimestampCaptureStartedCallback: IFrameTimestampCaptureStartedCallback? = null
+    var frameTimestampCaptureStateChangedCallback: IFrameTimestampCaptureStateChangedCallback? = null
 
     @kotlin.Deprecated("Deprecated since version 3.3.0")
     var cameraId: String = ""
@@ -226,8 +226,8 @@ class CameraRequest private constructor() {
             return this
         }
 
-        fun setFrameTimestampCaptureStartedCallback(callback: IFrameTimestampCaptureStartedCallback): Builder {
-            mRequest.frameTimestampCaptureStartedCallback = callback
+        fun setFrameTimestampCaptureStartedCallback(callback: IFrameTimestampCaptureStateChangedCallback): Builder {
+            mRequest.frameTimestampCaptureStateChangedCallback = callback
             return this
         }
 

@@ -23,8 +23,7 @@
 
 package com.jiangdg.uvc;
 
-import java.nio.LongBuffer;
-
-public interface IFrameTimestampCaptureStartedCallback {
+public interface IFrameTimestampCaptureStateChangedCallback {
 	public IFrameTimestampCallback onFrameTimestampCaptureStarted(String basePath);
+	public void onFrameTimestampCaptureStopped();
 }

@@ -865,7 +865,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 return
             }
             var definedPath: String = path ?: generatePath()
-            mCameraRequest?.frameTimestampCaptureStartedCallback?.apply {
+            mCameraRequest?.frameTimestampCaptureStateChangedCallback?.apply {
                 setFrameTimestampCallback(this.onFrameTimestampCaptureStarted(definedPath))
             }
             captureStreamStartInternal()
@@ -883,7 +883,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             return "$mCameraDir/VID_JJCamera_$date"
         }
 
-        protected abstract fun setFrameTimestampCallback(callback: IFrameTimestampCallback);
+        protected abstract fun setFrameTimestampCallback(callback: IFrameTimestampCallback?);
 
         private fun captureVideoStopInternal() {
             captureStreamStopInternal()
@@ -928,6 +928,10 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             (mAudioProcess as? AACEncodeProcessor)?.apply {
                 stopEncode()
                 setEncodeDataCallBack(null)
+            }
+            mCameraRequest?.frameTimestampCaptureStateChangedCallback?.apply {
+                setFrameTimestampCallback(null)
+                this.onFrameTimestampCaptureStopped()
             }
             Logger.i(TAG, "capturing stream stop")
         }
