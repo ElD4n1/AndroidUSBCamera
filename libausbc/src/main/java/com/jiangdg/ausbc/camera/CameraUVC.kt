@@ -107,7 +107,7 @@ class CameraUVC(ctx: Context, device: UsbDevice) : MultiCameraClient.ICamera(ctx
         return previewSizeList
     }
 
-    override fun setFrameTimestampCallback(callback: IFrameTimestampCallback) {
+    override fun setFrameTimestampCallback(callback: IFrameTimestampCallback?) {
         if (mUvcCamera?.setFrameTimestampCallback(callback) == 0)
             Logger.i(TAG, "Successfully set frame timestamp callback")
         else
