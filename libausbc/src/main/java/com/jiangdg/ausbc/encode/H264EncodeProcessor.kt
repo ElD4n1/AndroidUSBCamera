@@ -38,8 +38,9 @@ class H264EncodeProcessor(
     val height: Int,
     private val gLESRender: Boolean = false,
     private val isPortrait: Boolean = true,
-    bitRate: Int? = null
-) : AbstractProcessor(bitRate) {
+    bitRate: Int? = null,
+    mEncodingStoppedCallback: (() -> Unit)? = null
+) : AbstractProcessor(bitRate, mEncodingStoppedCallback) {
     private var mReadyListener: OnEncodeReadyListener? = null
     private var mPpsSps = ByteArray(0)
 

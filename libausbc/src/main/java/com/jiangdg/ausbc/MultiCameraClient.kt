@@ -37,6 +37,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingDeque
+import java.util.concurrent.Semaphore
 import kotlin.math.abs
 
 /** Multi-road camera client
@@ -287,6 +288,9 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
         protected val mCameraDir by lazy {
             "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)}/Camera"
         }
+        private var isVideoEncoderStopped = true
+        private var isAudioEncoderStopped = true
+        private var cutRequest: CutVideoRequest? = null
 
         override fun handleMessage(msg: Message): Boolean {
             when (msg.what) {
@@ -387,6 +391,14 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 MSG_CAPTURE_STREAM_STOP -> {
                     captureStreamStopInternal()
                 }
+                MSG_VIDEO_ENCODER_STOPPED -> {
+                    isVideoEncoderStopped = true
+                    onEncoderStoppedInternal()
+                }
+                MSG_AUDIO_ENCODER_STOPPED -> {
+                    isAudioEncoderStopped = true
+                    onEncoderStoppedInternal()
+                }
             }
             return true
         }
@@ -448,7 +460,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             releaseEncodeProcessor()
             // create audio process
             getAudioStrategy()?.let { audio->
-                AACEncodeProcessor(audio)
+                AACEncodeProcessor(audio) { onAudioEncoderStopped() }
             }?.also { processor ->
                 mAudioProcess = processor
             }
@@ -456,7 +468,9 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             mContext.resources.configuration.orientation.let { orientation ->
                 orientation == Configuration.ORIENTATION_PORTRAIT
             }.also { isPortrait ->
-                mVideoProcess = H264EncodeProcessor(previewWidth, previewHeight, isNeedGLESRender, isPortrait, mCameraRequest?.bitRate)
+                mVideoProcess = H264EncodeProcessor(previewWidth, previewHeight, isNeedGLESRender,
+                    isPortrait, mCameraRequest?.bitRate
+                ) { onVideoEncoderStopped() }
             }
         }
 
@@ -750,6 +764,14 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             mCameraHandler?.obtainMessage(MSG_CAPTURE_STREAM_STOP)?.sendToTarget()
         }
 
+        private fun onVideoEncoderStopped()  {
+            mCameraHandler?.obtainMessage(MSG_VIDEO_ENCODER_STOPPED)?.sendToTarget()
+        }
+
+        private fun onAudioEncoderStopped() {
+            mCameraHandler?.obtainMessage(MSG_AUDIO_ENCODER_STOPPED)?.sendToTarget()
+        }
+
         /**
          * Update resolution
          *
@@ -911,8 +933,9 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
         }
         
         private fun captureVideoCutInternal(path: String?, durationInSec: Long, callBack: ICaptureCallBack) {
+            cutRequest = CutVideoRequest(path, durationInSec, callBack)
             captureVideoStopInternal()
-            captureVideoStartInternal(path, durationInSec, callBack)
+            // NOTE: captureVideoStartInternal() is called via callback when both encoders (audio, video) are stopped
         }
 
         private fun captureStreamStartInternal() {
@@ -925,6 +948,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 return
             }
             (mVideoProcess as? H264EncodeProcessor)?.apply {
+                isVideoEncoderStopped = false
                 if (mVideoProcess?.isEncoding() == true) {
                     return@apply
                 }
@@ -933,6 +957,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 setOnEncodeReadyListener(this@ICamera)
             }
             (mAudioProcess as? AACEncodeProcessor)?.apply {
+                isAudioEncoderStopped = false
                 if (mAudioProcess?.isEncoding() == true) {
                     return@apply
                 }
@@ -957,6 +982,14 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 this.onFrameTimestampCaptureStopped()
             }
             Logger.i(TAG, "capturing stream stop")
+        }
+
+        private fun onEncoderStoppedInternal() {
+            if (isVideoEncoderStopped && isAudioEncoderStopped && cutRequest != null) {
+                captureVideoStartInternal( // Using !! because calls happen in a message queue
+                    cutRequest!!.path, cutRequest!!.durationInSec, cutRequest!!.callback)
+                cutRequest = null
+            }
         }
 
         override fun onReady(surface: Surface?) {
@@ -984,12 +1017,20 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
         private const val MSG_CAPTURE_IMAGE = 0x03
         private const val MSG_CAPTURE_VIDEO_START = 0x04
         private const val MSG_CAPTURE_VIDEO_STOP = 0x05
-        private const val MSG_CAPTURE_VIDEO_CUT = 0x08
         private const val MSG_CAPTURE_STREAM_START = 0x06
         private const val MSG_CAPTURE_STREAM_STOP = 0x07
+        private const val MSG_CAPTURE_VIDEO_CUT = 0x08
+        private const val MSG_VIDEO_ENCODER_STOPPED = 0x09
+        private const val MSG_AUDIO_ENCODER_STOPPED = 0x0A
         private const val DEFAULT_PREVIEW_WIDTH = 640
         private const val DEFAULT_PREVIEW_HEIGHT = 480
         const val MAX_NV21_DATA = 5
         const val CAPTURE_TIMES_OUT_SEC = 3L
     }
 }
+
+data class CutVideoRequest(
+    val path: String?,
+    val durationInSec: Long,
+    val callback: ICaptureCallBack
+)
