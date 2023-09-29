@@ -376,6 +376,11 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
                 MSG_CAPTURE_VIDEO_STOP -> {
                     captureVideoStopInternal()
                 }
+                MSG_CAPTURE_VIDEO_CUT -> {
+                    (msg.obj as Triple<*, *, *>).apply {
+                        captureVideoCutInternal(first as? String, second as Long, third as ICaptureCallBack)
+                    }
+                }
                 MSG_CAPTURE_STREAM_START -> {
                     captureStreamStartInternal()
                 }
@@ -718,6 +723,19 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
         }
 
         /**
+         * Capture video cut (i.e. stop + start)
+         *
+         * @param callBack capture result callback, see [ICaptureCallBack]
+         * @param path video save path, default is DICM/Camera
+         * @param durationInSec video file auto divide duration is seconds
+         */
+        fun captureVideoCut(callBack: ICaptureCallBack, path: String? = null, durationInSec: Long = 0L) {
+            Triple(path, durationInSec, callBack).apply {
+                mCameraHandler?.obtainMessage(MSG_CAPTURE_VIDEO_CUT, this)?.sendToTarget()
+            }
+        }
+
+        /**
          * Capture stream start
          *  Getting H.264 and AAC stream
          */
@@ -856,7 +874,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
         fun isStreaming() = mVideoProcess?.isEncoding() == true || mAudioProcess?.isEncoding() == true
 
         private fun captureVideoStartInternal(path: String?, durationInSec: Long, callBack: ICaptureCallBack) {
-            if (! isCameraOpened()) {
+            if (!isCameraOpened()) {
                 Logger.e(TAG ,"capture video failed, camera not opened")
                 return
             }
@@ -890,6 +908,11 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
             mMediaMuxer?.release()
             mMediaMuxer = null
             Logger.i(TAG, "capturing video stop")
+        }
+        
+        private fun captureVideoCutInternal(path: String?, durationInSec: Long, callBack: ICaptureCallBack) {
+            captureVideoStopInternal()
+            captureVideoStartInternal(path, durationInSec, callBack)
         }
 
         private fun captureStreamStartInternal() {
@@ -961,6 +984,7 @@ class MultiCameraClient(ctx: Context, callback: IDeviceConnectCallBack?) {
         private const val MSG_CAPTURE_IMAGE = 0x03
         private const val MSG_CAPTURE_VIDEO_START = 0x04
         private const val MSG_CAPTURE_VIDEO_STOP = 0x05
+        private const val MSG_CAPTURE_VIDEO_CUT = 0x08
         private const val MSG_CAPTURE_STREAM_START = 0x06
         private const val MSG_CAPTURE_STREAM_STOP = 0x07
         private const val DEFAULT_PREVIEW_WIDTH = 640

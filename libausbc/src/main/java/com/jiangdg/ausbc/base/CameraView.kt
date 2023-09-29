@@ -396,6 +396,17 @@ abstract class CameraView : ICameraStateCallBack {
     }
 
     /**
+     * Capture video cut
+     *
+     * @param callBack capture status, see [ICaptureCallBack]
+     * @param path custom save path
+     * @param durationInSec divided record duration time in seconds
+     */
+    protected fun captureVideoCut(callBack: ICaptureCallBack, path: String ?= null, durationInSec: Long = 0L) {
+        getCurrentCamera()?.captureVideoCut(callBack, path, durationInSec)
+    }
+
+    /**
      * Capture audio start
      *
      * @param callBack capture status, see [ICaptureCallBack]
