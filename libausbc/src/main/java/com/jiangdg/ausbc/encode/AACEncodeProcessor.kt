@@ -37,7 +37,8 @@ import kotlin.Exception
  *
  * @author Created by jiangdg on 2022/2/10
  */
-class AACEncodeProcessor(strategy: IAudioStrategy? = null) : AbstractProcessor() {
+class AACEncodeProcessor(strategy: IAudioStrategy? = null, mEncodingStoppedCallback: (() -> Unit)? = null)
+    : AbstractProcessor(mEncodingStoppedCallback = mEncodingStoppedCallback) {
     private var mAudioTrack: AudioTrack? = null
     private var mPresentationTimeUs: Long = 0L
     private var mCountDownLatch: CountDownLatch? = null

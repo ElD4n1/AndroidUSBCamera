@@ -35,7 +35,8 @@ import kotlin.Exception
  * @author Created by jiangdg on 2022/2/10
  */
 abstract class AbstractProcessor(
-    protected var mBitRate: Int? = null
+    protected var mBitRate: Int? = null,
+    protected val mEncodingStoppedCallback: (() -> Unit)? = null
 ) {
     private var mEncodeThread: HandlerThread? = null
     private var mEncodeHandler: Handler? = null
@@ -69,6 +70,7 @@ abstract class AbstractProcessor(
                 }
                 MSG_STOP -> {
                     handleStopEncode()
+                    mEncodingStoppedCallback?.let { it() }
                 }
             }
             true
