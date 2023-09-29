@@ -191,7 +191,10 @@ class Mp4Muxer(
             mVideoTrackerIndex = -1
             mAudioPts = 0L
             mVideoPts = 0L
-            insertDCIM(mContext, path)
+//            insertDCIM(mContext, path)
+            mMainHandler.post {
+                mCaptureCallBack?.onComplete(this.path)
+            }
 
             path = "${mOriginalPath}_${++mFileSubIndex}.mp4"
             mMediaMuxer = MediaMuxer(path!!, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
@@ -213,7 +216,10 @@ class Mp4Muxer(
         try {
             mMediaMuxer?.stop()
             mMediaMuxer?.release()
-            insertDCIM(mContext, path, true)
+//            insertDCIM(mContext, path, true)
+            mMainHandler.post {
+                mCaptureCallBack?.onComplete(this.path)
+            }
         } catch (e: Exception) {
             mMainHandler.post {
                 mCaptureCallBack?.onError(e.localizedMessage)
@@ -238,9 +244,9 @@ class Mp4Muxer(
             ctx.contentResolver.let { content ->
                 val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 content.insert(uri, getVideoContentValues(videoPath))
-                mMainHandler.post {
-                    mCaptureCallBack?.onComplete(this.path)
-                }
+//                mMainHandler.post {
+//                    mCaptureCallBack?.onComplete(this.path)
+//                }
             }
         }
     }
