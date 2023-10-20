@@ -5,6 +5,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 android {
 	compileSdkVersion 31
+	ndkVersion '24.0.8215888'
 //	buildToolsVersion rootProject.ext.versionBuildTool
 //
 //	compileOptions {
