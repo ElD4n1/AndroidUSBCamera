@@ -46,7 +46,6 @@ abstract class AbstractProcessor(
     private var mMp4Muxer: Mp4Muxer? = null
     private var mEncodeDataCb: IEncodeDataCallBack? = null
     protected val mRawDataQueue: ConcurrentLinkedQueue<RawData> = ConcurrentLinkedQueue()
-    protected var mBitRate: Int? = null
     private var isExit = true
     protected val mMainHandler: Handler by lazy {
         Handler(Looper.getMainLooper())
