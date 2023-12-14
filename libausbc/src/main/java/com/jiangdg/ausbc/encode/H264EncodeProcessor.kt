@@ -23,6 +23,7 @@ import com.jiangdg.ausbc.callback.IEncodeDataCallBack
 import com.jiangdg.ausbc.utils.Logger
 import com.jiangdg.natives.YUVUtils
 import java.lang.Exception
+import java.nio.ByteBuffer
 
 /**
  * Encode h264 by MediaCodec
@@ -40,9 +41,8 @@ class H264EncodeProcessor(
     private val isPortrait: Boolean = true,
     bitRate: Int? = null,
     mEncodingStoppedCallback: (() -> Unit)? = null
-) : AbstractProcessor(bitRate, mEncodingStoppedCallback) {
+) : AbstractProcessor(true, bitRate, mEncodingStoppedCallback) {
     private var mReadyListener: OnEncodeReadyListener? = null
-    private var mPpsSps = ByteArray(0)
 
     override fun getThreadName(): String = TAG
 
@@ -88,24 +88,21 @@ class H264EncodeProcessor(
     override fun getPTSUs(bufferSize: Int): Long = System.nanoTime() / 1000L
 
     override fun processOutputData(
-        bufferInfo: MediaCodec.BufferInfo,
-        encodeData: ByteArray
-    ): Pair<IEncodeDataCallBack.DataType, ByteArray> {
-        return when (bufferInfo.flags) {
+        encodeData: ByteBuffer,
+        bufferInfo: MediaCodec.BufferInfo
+    ): Pair<IEncodeDataCallBack.DataType, ByteBuffer> {
+        val type = when (bufferInfo.flags) {
             MediaCodec.BUFFER_FLAG_CODEC_CONFIG -> {
-                mPpsSps = encodeData
-                Pair(IEncodeDataCallBack.DataType.H264_SPS, encodeData)
+                IEncodeDataCallBack.DataType.H264_SPS
             }
             MediaCodec.BUFFER_FLAG_KEY_FRAME -> {
-                val iFrameData = ByteArray(mPpsSps.size + bufferInfo.size)
-                System.arraycopy(mPpsSps, 0, iFrameData, 0, mPpsSps.size)
-                System.arraycopy(encodeData, 0, iFrameData, mPpsSps.size, encodeData.size)
-                Pair(IEncodeDataCallBack.DataType.H264_KEY, iFrameData)
+                IEncodeDataCallBack.DataType.H264_KEY
             }
             else -> {
-                Pair(IEncodeDataCallBack.DataType.H264, encodeData)
+                IEncodeDataCallBack.DataType.H264
             }
         }
+        return Pair(type, encodeData)
     }
 
     override fun processInputData(data: ByteArray): ByteArray? {
@@ -180,9 +177,5 @@ class H264EncodeProcessor(
         private const val MIME = "video/avc"
         private const val FRAME_RATE = 30
         private const val KEY_FRAME_INTERVAL = 1
-
-        private const val KEY_FRAME = 2
-        private const val OTHER_FRAME = 1
-        private const val PPS_SPS_FRAME = -1
     }
 }

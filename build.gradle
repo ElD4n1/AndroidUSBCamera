@@ -1,7 +1,6 @@
 // Top-level build file where you can add configuration options libuvccommon to all sub-projects/modules.
 buildscript {
     repositories {
-        mavenLocal()
         google()
         jcenter()
         maven { url "https://jitpack.io" }
@@ -22,7 +21,6 @@ buildscript {
 
 allprojects {
     repositories {
-        mavenLocal()
         google()
         jcenter()
         maven { url "https://jitpack.io" }
